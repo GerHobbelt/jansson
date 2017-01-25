@@ -59,6 +59,7 @@ typedef struct {
 typedef struct {
     json_t json;
     json_int_t value;
+    bool uint;
 } json_integer_t;
 
 #define json_to_object(json_)  container_of(json_, json_object_t, json)

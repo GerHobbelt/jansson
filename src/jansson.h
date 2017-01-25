@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>  /* for size_t */
 #include <stdarg.h>
+#include <stdbool.h>
+#include <inttypes.h>
 
 #include "jansson_config.h"
 
@@ -57,11 +59,13 @@ typedef struct json_t {
 #ifdef _WIN32
 #define JSON_INTEGER_FORMAT "I64d"
 #else
-#define JSON_INTEGER_FORMAT "lld"
+#define JSON_INTEGER_FORMAT PRIi64
+#define JSON_UINTEGER_FORMAT PRIu64
 #endif
 typedef long long json_int_t;
 #else
-#define JSON_INTEGER_FORMAT "ld"
+#define JSON_INTEGER_FORMAT PRIi32
+#define JSON_UINTEGER_FORMAT PRIu32
 typedef long json_int_t;
 #endif /* JSON_INTEGER_IS_LONG_LONG */
 #endif
@@ -88,6 +92,7 @@ json_t *json_stringn(const char *value, size_t len);
 json_t *json_string_nocheck(const char *value);
 json_t *json_stringn_nocheck(const char *value, size_t len);
 json_t *json_integer(json_int_t value);
+json_t *json_uinteger(json_int_t value);
 json_t *json_real(double value);
 json_t *json_true(void);
 json_t *json_false(void);
@@ -225,6 +230,7 @@ int json_array_insert(json_t *array, size_t ind, json_t *value)
 const char *json_string_value(const json_t *string);
 size_t json_string_length(const json_t *string);
 json_int_t json_integer_value(const json_t *integer);
+bool json_integer_is_unsigned(const json_t *json);
 double json_real_value(const json_t *real);
 double json_number_value(const json_t *json);
 

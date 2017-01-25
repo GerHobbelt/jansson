@@ -336,6 +336,9 @@ static json_t *pack(scanner_t *s, va_list *ap)
         case 'I': /* integer from json_int_t */
             return json_integer(va_arg(*ap, json_int_t));
 
+        case 'U':
+            return json_uinteger(va_arg(*ap, json_int_t));
+
         case 'f': /* real */
             return json_real(va_arg(*ap, double));
 

@@ -790,17 +790,34 @@ static json_t *json_string_copy(const json_t *string)
 
 
 /*** integer ***/
-
-json_t *json_integer(json_int_t value)
+json_t *_json_integer(json_int_t value, bool is_unsigned)
 {
     json_integer_t *integer = jsonp_malloc(sizeof(json_integer_t));
     if(!integer)
         return NULL;
     json_init(&integer->json, JSON_INTEGER);
 
+    integer->uint = is_unsigned;
     integer->value = value;
     return &integer->json;
 }
+
+json_t *json_integer(json_int_t value)
+{
+    return _json_integer(value, false);
+}
+
+json_t *json_uinteger(json_int_t value)
+{
+    return _json_integer(value, true);
+}
+
+bool json_integer_is_unsigned(const json_t *json) {
+    if(!json_is_integer(json))
+        return 0;
+    return json_to_integer(json)->uint;
+}
+
 
 json_int_t json_integer_value(const json_t *json)
 {

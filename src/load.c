@@ -33,6 +33,7 @@
 #define TOKEN_TRUE           259
 #define TOKEN_FALSE          260
 #define TOKEN_NULL           261
+#define TOKEN_UINTEGER       262
 
 /* Locale independent versions of isxxx() functions */
 #define l_isupper(c)  ('A' <= (c) && (c) <= 'Z')
@@ -521,16 +522,23 @@ static int lex_scan_number(lex_t *lex, int c, json_error_t *error)
         errno = 0;
         intval = json_strtoint(saved_text, &end, 10);
         if(errno == ERANGE) {
-            if(intval < 0)
+            if(intval < 0) {
                 error_set(error, lex, "too big negative integer");
-            else
-                error_set(error, lex, "too big integer");
-            goto out;
+                goto out;
+            } else {
+                // Try to load it as an unsigned value
+                errno = 0;
+                intval = strtoull(saved_text, &end, 10);
+                if (errno == ERANGE) {
+                    error_set(error, lex, "too big integer");
+                    goto out;
+                }
+                lex->token = TOKEN_UINTEGER;
+            }
+        } else {
+            lex->token = TOKEN_INTEGER;
         }
-
         assert(end == saved_text + lex->saved_text.length);
-
-        lex->token = TOKEN_INTEGER;
         lex->value.integer = intval;
         return 0;
     }
@@ -830,8 +838,13 @@ static json_t *parse_value(lex_t *lex, size_t flags, json_error_t *error)
             break;
         }
 
+        case TOKEN_UINTEGER:
         case TOKEN_INTEGER: {
-            json = json_integer(lex->value.integer);
+            if (lex->token == TOKEN_INTEGER) {
+                json = json_integer(lex->value.integer);
+            } else {
+                json = json_uinteger(lex->value.integer);
+            }
             break;
         }
 
