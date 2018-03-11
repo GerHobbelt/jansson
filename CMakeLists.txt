@@ -624,8 +624,8 @@ set(JANSSON__INCLUDE_DIRS
     "${PROJECT_SOURCE_DIR}/include"
     "${PROJECT_BINARY_DIR}/include")
 set(JANSSON_INCLUDE_DIRS ${JANSSON__INCLUDE_DIRS} CACHE PATH "Jansson include directories")
-configure_file(${PROJECT_SOURCE_DIR}/cmake/JanssonConfig.cmake.in
-                ${PROJECT_BINARY_DIR}/JanssonConfig.cmake
+configure_file(${PROJECT_SOURCE_DIR}/cmake/janssonConfig.cmake.in
+                ${PROJECT_BINARY_DIR}/janssonConfig.cmake
                 @ONLY)
 
 # Generate the config file for the installation tree.
@@ -634,19 +634,19 @@ file(RELATIVE_PATH
     "${JANSSON_INSTALL_CMAKE_DIR}"
     "${JANSSON_INSTALL_INCLUDE_DIR}") # Calculate the relative directory from the Cmake dir.
 
-# Note the EVENT_CMAKE_DIR is defined in JanssonConfig.cmake.in,
+# Note the EVENT_CMAKE_DIR is defined in janssonConfig.cmake.in,
 # we escape it here so it's evaluated when it is included instead
 # so that the include dirs are given relative to where the
 # config file is located.
 set(JANSSON__INCLUDE_DIRS
     "\${JANSSON_CMAKE_DIR}/${REL_INCLUDE_DIR}")
-configure_file(${PROJECT_SOURCE_DIR}/cmake/JanssonConfig.cmake.in
-                ${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/JanssonConfig.cmake
+configure_file(${PROJECT_SOURCE_DIR}/cmake/janssonConfig.cmake.in
+                ${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/janssonConfig.cmake
                 @ONLY)
 
 # Generate version info for both build-tree and install-tree.
-configure_file(${PROJECT_SOURCE_DIR}/cmake/JanssonConfigVersion.cmake.in
-                ${PROJECT_BINARY_DIR}/JanssonConfigVersion.cmake
+configure_file(${PROJECT_SOURCE_DIR}/cmake/janssonConfigVersion.cmake.in
+                ${PROJECT_BINARY_DIR}/janssonConfigVersion.cmake
                 @ONLY)
 
 # Define the public headers.
@@ -672,8 +672,8 @@ install (FILES
 
 # Install the configs.
 install(FILES
-    ${PROJECT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/JanssonConfig.cmake
-    ${PROJECT_BINARY_DIR}/JanssonConfigVersion.cmake
+    ${PROJECT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/janssonConfig.cmake
+    ${PROJECT_BINARY_DIR}/janssonConfigVersion.cmake
     DESTINATION "${JANSSON_INSTALL_CMAKE_DIR}" COMPONENT dev)
 
 # Install exports for the install-tree.
