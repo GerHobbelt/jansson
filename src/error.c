@@ -18,19 +18,23 @@ void jsonp_error_init(json_error_t *error, const char *source)
 
 void jsonp_error_set_source(json_error_t *error, const char *source)
 {
-    size_t length;
+    size_t size_avail = sizeof(error->source);
+    size_t size_needed;
 
     if(!error || !source)
         return;
 
-    length = strlen(source);
-    if(length < JSON_ERROR_SOURCE_LENGTH)
-        strncpy(error->source, source, length + 1);
-    else {
-        size_t extra = length - JSON_ERROR_SOURCE_LENGTH + 4;
-        strncpy(error->source, "...", 3);
-        strncpy(error->source + 3, source + extra, length - extra + 1);
-    }
+    /*
+     * Place the entire error source into the target buffer if it fits,
+     * otherwise place the characters "..." followed the maximally long
+     * suffix of source that fits into the remaining space.
+     */
+
+    size_needed = snprintf(error->source, size_avail, "%s", source) + 1;
+
+    if (size_needed > size_avail)
+        snprintf(error->source, size_avail, "...%s",
+                 source + (size_needed - size_avail));
 }
 
 void jsonp_error_set(json_error_t *error, int line, int column,
