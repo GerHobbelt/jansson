@@ -36,10 +36,10 @@ endif()
 # set (JANSSON_VERSION "2.3.1")
 # set (JANSSON_SOVERSION 2)
 
-set(JANSSON_DISPLAY_VERSION "2.15.0")
+set(JANSSON_DISPLAY_VERSION "2.15.1")
 
 # This is what is required to match the same numbers as automake's
-set(JANSSON_VERSION "4.15.0")
+set(JANSSON_VERSION "4.15.1")
 set(JANSSON_SOVERSION 4)
 
 # for CheckFunctionKeywords
@@ -304,17 +304,17 @@ if(JANSSON_BUILD_SHARED_LIBS)
       src/jansson.def)
 
 # check if linker support --default-symver
-   list(APPEND CMAKE_REQUIRED_LIBRARIES "-Wl,--default-symver")
+   list(APPEND CMAKE_REQUIRED_LIBRARIES "-shared -Wl,--default-symver")
    check_c_source_compiles(
    "
-   int main (void)
+   int function (void)
    {
       return 0;
    }
    "
-   DSYMVER_WORKS
+   SYMVER_WORKS
    )
-   list(REMOVE_ITEM CMAKE_REQUIRED_LIBRARIES "-Wl,--default-symver")
+   list(REMOVE_ITEM CMAKE_REQUIRED_LIBRARIES "-shared -Wl,--default-symver")
 
    if (SYMVER_WORKS)
       set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--default-symver")
@@ -328,17 +328,17 @@ if(JANSSON_BUILD_SHARED_LIBS)
           *;
 };
 ")
-      list(APPEND CMAKE_REQUIRED_LIBRARIES "-Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
+      list(APPEND CMAKE_REQUIRED_LIBRARIES "-shared -Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
       check_c_source_compiles(
    "
-   int main (void)
+   int function (void)
    {
       return 0;
    }
    "
    VSCRIPT_WORKS
    )
-      list(REMOVE_ITEM CMAKE_REQUIRED_LIBRARIES "-Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
+      list(REMOVE_ITEM CMAKE_REQUIRED_LIBRARIES "-shared -Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
       if (VSCRIPT_WORKS)
          set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
       endif()
